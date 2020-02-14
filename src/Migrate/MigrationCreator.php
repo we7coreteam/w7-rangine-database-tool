@@ -21,6 +21,6 @@ class MigrationCreator extends MigrationCreatorAbstract {
 	 * @return string
 	 */
 	public function stubPath() {
-		return __DIR__.'/stubs';
+		return __DIR__ . '/../Command/Migrate/stubs';
 	}
 }
