@@ -1,18 +1,18 @@
 <?php
 
 /**
- * This file is part of Rangine
+ * Rangine database Tool
  *
- * (c) We7Team 2019 <https://www.rangine.com/>
+ * (c) We7Team 2019 <https://www.rangine.com>
  *
  * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
  *
- * visited https://www.rangine.com/ for more details
+ * visited https://www.rangine.com for more details
  */
 
 namespace W7\DatabaseTool\Command\Seed;
 
-use W7\Console\Command\GeneratorCommandAbstract;
+use W7\Command\Command\Make\GeneratorCommandAbstract;
 
 class MakeCommand extends GeneratorCommandAbstract {
 	/**
@@ -21,10 +21,6 @@ class MakeCommand extends GeneratorCommandAbstract {
 	 * @var string
 	 */
 	protected $description = 'create a new seeder class';
-
-	protected function before() {
-		$this->name = ucfirst($this->name);
-	}
 
 	protected function after() {
 		exec('composer dump-autoload');
@@ -40,7 +36,7 @@ class MakeCommand extends GeneratorCommandAbstract {
 	}
 
 	protected function replaceStub() {
-		$this->replace('{{ DummyClass }}', $this->name);
+		$this->replace('{{ DummyClass }}', $this->name['class']);
 	}
 
 	protected function savePath() {
