@@ -1,13 +1,13 @@
 <?php
 
 /**
- * This file is part of Rangine
+ * Rangine database Tool
  *
- * (c) We7Team 2019 <https://www.rangine.com/>
+ * (c) We7Team 2019 <https://www.rangine.com>
  *
  * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
  *
- * visited https://www.rangine.com/ for more details
+ * visited https://www.rangine.com for more details
  */
 
 namespace W7\DatabaseTool\Command\Migrate;
@@ -46,29 +46,23 @@ class StatusCommand extends MigrateCommandAbstract {
 	 * @return void
 	 */
 	protected function handle($options) {
-		igo(function () use ($options) {
-			try {
-				idb()->setDefaultConnection($options['database']);
-				$this->migrator = new Migrator(new DatabaseMigrationRepository(idb(), MigrateCommandAbstract::MIGRATE_TABLE_NAME), idb(), new Filesystem(), iloader()->get(EventDispatcher::class));
-				$this->migrator->setConnection($this->option('database'));
+		idb()->setDefaultConnection($options['database']);
+		$this->migrator = new Migrator(new DatabaseMigrationRepository(idb(), MigrateCommandAbstract::MIGRATE_TABLE_NAME), idb(), new Filesystem(), iloader()->get(EventDispatcher::class));
+		$this->migrator->setConnection($this->option('database'));
 
-				if (! $this->migrator->repositoryExists()) {
-					return $this->output->error('Migration table not found.');
-				}
+		if (! $this->migrator->repositoryExists()) {
+			return $this->output->error('Migration table not found.');
+		}
 
-				$ran = $this->migrator->getRepository()->getRan();
+		$ran = $this->migrator->getRepository()->getRan();
 
-				$batches = $this->migrator->getRepository()->getMigrationBatches();
+		$batches = $this->migrator->getRepository()->getMigrationBatches();
 
-				if (count($migrations = $this->getStatusFor($ran, $batches)) > 0) {
-					$this->output->table(['Ran?', 'Migration', 'Batch'], $migrations->toArray());
-				} else {
-					$this->output->error('No migrations found');
-				}
-			} catch (\Throwable $e) {
-				$this->output->error($e->getMessage());
-			}
-		});
+		if (count($migrations = $this->getStatusFor($ran, $batches)) > 0) {
+			$this->output->table(['Ran?', 'Migration', 'Batch'], $migrations->toArray());
+		} else {
+			$this->output->error('No migrations found');
+		}
 	}
 
 	/**

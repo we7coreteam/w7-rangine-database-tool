@@ -1,13 +1,13 @@
 <?php
 
 /**
- * This file is part of Rangine
+ * Rangine database Tool
  *
- * (c) We7Team 2019 <https://www.rangine.com/>
+ * (c) We7Team 2019 <https://www.rangine.com>
  *
  * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
  *
- * visited https://www.rangine.com/ for more details
+ * visited https://www.rangine.com for more details
  */
 
 namespace W7\DatabaseTool\Command\Migrate;
@@ -47,26 +47,20 @@ class ResetCommand extends MigrateCommandAbstract {
 			return;
 		}
 
-		igo(function () use ($options) {
-			try {
-				idb()->setDefaultConnection($options['database']);
-				$this->migrator = new Migrator(new DatabaseMigrationRepository(idb(), 'migration'), idb(), new Filesystem(), iloader()->get(EventDispatcher::class));
-				$this->migrator->setConnection($this->option('database'));
+		idb()->setDefaultConnection($options['database']);
+		$this->migrator = new Migrator(new DatabaseMigrationRepository(idb(), 'migration'), idb(), new Filesystem(), iloader()->get(EventDispatcher::class));
+		$this->migrator->setConnection($this->option('database'));
 
-				// First, we'll make sure that the migration table actually exists before we
-				// start trying to rollback and re-run all of the migrations. If it's not
-				// present we'll just bail out with an info message for the developers.
-				if (!$this->migrator->repositoryExists()) {
-					return $this->output->comment('Migration table not found.');
-				}
+		// First, we'll make sure that the migration table actually exists before we
+		// start trying to rollback and re-run all of the migrations. If it's not
+		// present we'll just bail out with an info message for the developers.
+		if (!$this->migrator->repositoryExists()) {
+			return $this->output->comment('Migration table not found.');
+		}
 
-				$this->migrator->setOutput($this->output)->reset(
-					$this->getMigrationPaths(),
-					$this->option('pretend')
-				);
-			} catch (\Throwable $e) {
-				$this->output->error($e->getMessage());
-			}
-		});
+		$this->migrator->setOutput($this->output)->reset(
+			$this->getMigrationPaths(),
+			$this->option('pretend')
+		);
 	}
 }

@@ -1,13 +1,13 @@
 <?php
 
 /**
- * This file is part of Rangine
+ * Rangine database Tool
  *
- * (c) We7Team 2019 <https://www.rangine.com/>
+ * (c) We7Team 2019 <https://www.rangine.com>
  *
  * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
  *
- * visited https://www.rangine.com/ for more details
+ * visited https://www.rangine.com for more details
  */
 
 namespace W7\DatabaseTool\Command\Migrate;
@@ -33,18 +33,12 @@ class InstallCommand extends MigrateCommandAbstract {
 	 * @return void
 	 */
 	protected function handle($options) {
-		igo(function () use ($options) {
-			try {
-				idb()->setDefaultConnection($options['database']);
-				$repository = new DatabaseMigrationRepository(idb(), MigrateCommandAbstract::MIGRATE_TABLE_NAME);
-				$repository->setSource($this->input->getOption('database'));
+		idb()->setDefaultConnection($options['database']);
+		$repository = new DatabaseMigrationRepository(idb(), MigrateCommandAbstract::MIGRATE_TABLE_NAME);
+		$repository->setSource($this->input->getOption('database'));
 
-				$repository->createRepository();
+		$repository->createRepository();
 
-				$this->output->info('Migration table created successfully.');
-			} catch (\Throwable $e) {
-				$this->output->error($e->getMessage());
-			}
-		});
+		$this->output->info('Migration table created successfully.');
 	}
 }

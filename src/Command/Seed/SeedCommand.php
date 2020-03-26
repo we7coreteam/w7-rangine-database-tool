@@ -1,13 +1,13 @@
 <?php
 
 /**
- * This file is part of Rangine
+ * Rangine database Tool
  *
- * (c) We7Team 2019 <https://www.rangine.com/>
+ * (c) We7Team 2019 <https://www.rangine.com>
  *
  * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
  *
- * visited https://www.rangine.com/ for more details
+ * visited https://www.rangine.com for more details
  */
 
 namespace W7\DatabaseTool\Command\Seed;
@@ -53,14 +53,8 @@ class SeedCommand extends CommandAbstract {
 
 		idb()->setDefaultConnection($this->option('database'));
 
-		igo(function () use ($class) {
-			try {
-				Model::unguarded(function () use ($class) {
-					(new $class)->run();
-				});
-			} catch (\Throwable $e) {
-				$this->output->error($e->getMessage());
-			}
+		Model::unguarded(function () use ($class) {
+			(new $class)->run();
 		});
 
 		$this->output->success('Database seeding completed successfully.');

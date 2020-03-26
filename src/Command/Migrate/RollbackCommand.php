@@ -1,13 +1,13 @@
 <?php
 
 /**
- * This file is part of Rangine
+ * Rangine database Tool
  *
- * (c) We7Team 2019 <https://www.rangine.com/>
+ * (c) We7Team 2019 <https://www.rangine.com>
  *
  * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
  *
- * visited https://www.rangine.com/ for more details
+ * visited https://www.rangine.com for more details
  */
 
 namespace W7\DatabaseTool\Command\Migrate;
@@ -48,22 +48,16 @@ class RollbackCommand extends MigrateCommandAbstract {
 			return;
 		}
 
-		igo(function () use ($options) {
-			try {
-				idb()->setDefaultConnection($options['database']);
-				$this->migrator = new Migrator(new DatabaseMigrationRepository(idb(), MigrateCommandAbstract::MIGRATE_TABLE_NAME), idb(), new Filesystem(), iloader()->get(EventDispatcher::class));
-				$this->migrator->setConnection($this->option('database'));
+		idb()->setDefaultConnection($options['database']);
+		$this->migrator = new Migrator(new DatabaseMigrationRepository(idb(), MigrateCommandAbstract::MIGRATE_TABLE_NAME), idb(), new Filesystem(), iloader()->get(EventDispatcher::class));
+		$this->migrator->setConnection($this->option('database'));
 
-				$this->migrator->setOutput($this->output)->rollback(
-					$this->getMigrationPaths(),
-					[
-						'pretend' => $this->option('pretend'),
-						'step' => (int)$this->option('step'),
-					]
-				);
-			} catch (\Throwable $e) {
-				$this->output->error($e->getMessage());
-			}
-		});
+		$this->migrator->setOutput($this->output)->rollback(
+			$this->getMigrationPaths(),
+			[
+				'pretend' => $this->option('pretend'),
+				'step' => (int)$this->option('step'),
+			]
+		);
 	}
 }

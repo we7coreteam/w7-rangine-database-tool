@@ -1,13 +1,13 @@
 <?php
 
 /**
- * This file is part of Rangine
+ * Rangine database Tool
  *
- * (c) We7Team 2019 <https://www.rangine.com/>
+ * (c) We7Team 2019 <https://www.rangine.com>
  *
  * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
  *
- * visited https://www.rangine.com/ for more details
+ * visited https://www.rangine.com for more details
  */
 
 namespace W7\DatabaseTool\Command\Migrate;
@@ -54,32 +54,26 @@ class MigrateCommand extends MigrateCommandAbstract {
 			return;
 		}
 
-		igo(function () use ($options) {
-			try {
-				idb()->setDefaultConnection($options['database']);
-				$this->migrator = new Migrator(new DatabaseMigrationRepository(idb(), MigrateCommandAbstract::MIGRATE_TABLE_NAME), idb(), new Filesystem(), iloader()->get(EventDispatcher::class));
+		idb()->setDefaultConnection($options['database']);
+		$this->migrator = new Migrator(new DatabaseMigrationRepository(idb(), MigrateCommandAbstract::MIGRATE_TABLE_NAME), idb(), new Filesystem(), iloader()->get(EventDispatcher::class));
 
-				$this->prepareDatabase();
+		$this->prepareDatabase();
 
-				// Next, we will check to see if a path option has been defined. If it has
-				// we will use the path relative to the root of this installation folder
-				// so that migrations may be run for any path within the applications.
-				$this->migrator->setOutput($this->output)
-					->run($this->getMigrationPaths(), [
-						'pretend' => $this->option('pretend'),
-						'step' => $this->option('step'),
-					]);
+		// Next, we will check to see if a path option has been defined. If it has
+		// we will use the path relative to the root of this installation folder
+		// so that migrations may be run for any path within the applications.
+		$this->migrator->setOutput($this->output)
+			->run($this->getMigrationPaths(), [
+				'pretend' => $this->option('pretend'),
+				'step' => $this->option('step'),
+			]);
 
-				// Finally, if the "seed" option has been given, we will re-run the database
-				// seed task to re-populate the database, which is convenient when adding
-				// a migration and a seed at the same time, as it is only this command.
-				if ($this->option('seed') && ! $this->option('pretend')) {
-					$this->call('seed:seed', ['--force' => true]);
-				}
-			} catch (\Throwable $e) {
-				$this->output->error($e->getMessage());
-			}
-		});
+		// Finally, if the "seed" option has been given, we will re-run the database
+		// seed task to re-populate the database, which is convenient when adding
+		// a migration and a seed at the same time, as it is only this command.
+		if ($this->option('seed') && ! $this->option('pretend')) {
+			$this->call('seed:seed', ['--force' => true]);
+		}
 	}
 
 	/**
