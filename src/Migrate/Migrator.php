@@ -1,13 +1,13 @@
 <?php
 
 /**
- * This file is part of Rangine
+ * Rangine database Tool
  *
- * (c) We7Team 2019 <https://www.rangine.com/>
+ * (c) We7Team 2019 <https://www.rangine.com>
  *
  * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
  *
- * visited https://www.rangine.com/ for more details
+ * visited https://www.rangine.com for more details
  */
 
 namespace W7\DatabaseTool\Migrate;
@@ -25,6 +25,11 @@ use Illuminate\Support\Str;
 use W7\Console\Io\Output;
 use W7\Core\Dispatcher\EventDispatcher;
 
+/**
+ * 该类不直接继承illuminate下的Migrator是因为output不兼容问题
+ * Class Migrator
+ * @package W7\DatabaseTool\Migrate
+ */
 class Migrator {
 	/**
 	 * The event dispatcher instance.
@@ -374,10 +379,9 @@ class Migrator {
 
 	/**
 	 * Run a migration inside a transaction if the database supports it.
-	 *
-	 * @param  object  $migration
-	 * @param  string  $method
-	 * @return void
+	 * @param $migration
+	 * @param $method
+	 * @throws \Throwable
 	 */
 	protected function runMigration($migration, $method) {
 		$connection = $this->resolveConnection(
@@ -533,9 +537,8 @@ class Migrator {
 
 	/**
 	 * Resolve the database connection instance.
-	 *
-	 * @param  string  $connection
-	 * @return \Illuminate\Database\Connection
+	 * @param $connection
+	 * @return \Illuminate\Database\ConnectionInterface
 	 */
 	public function resolveConnection($connection) {
 		return $this->resolver->connection($connection ?: $this->connection);
@@ -544,7 +547,7 @@ class Migrator {
 	/**
 	 * Get the schema grammar out of a migration connection.
 	 *
-	 * @param  \Illuminate\Database\Connection  $connection
+	 * @param \Illuminate\Database\Connection $connection
 	 * @return \Illuminate\Database\Schema\Grammars\Grammar
 	 */
 	protected function getSchemaGrammar($connection) {
@@ -586,8 +589,7 @@ class Migrator {
 
 	/**
 	 * Set the output implementation that should be used by the console.
-	 *
-	 * @param  \Illuminate\Console\OutputStyle  $output
+	 * @param Output $output
 	 * @return $this
 	 */
 	public function setOutput(Output $output) {
