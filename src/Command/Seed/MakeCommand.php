@@ -35,10 +35,6 @@ class MakeCommand extends GeneratorCommandAbstract {
 		return __DIR__ . '/stubs/seeder.stub';
 	}
 
-	protected function replaceStub() {
-		$this->replace('{{ DummyClass }}', $this->name['class']);
-	}
-
 	protected function savePath() {
 		return 'database/seeds';
 	}

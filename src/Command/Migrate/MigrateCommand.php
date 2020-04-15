@@ -29,13 +29,6 @@ class MigrateCommand extends MigrateCommandAbstract {
 	 */
 	protected $description = 'run the database migrations';
 
-	/**
-	 * The migrator instance.
-	 *
-	 * @var Migrator
-	 */
-	protected $migrator;
-
 	protected function configure() {
 		$this->addOption('--database', null, InputOption::VALUE_OPTIONAL, 'The database connection to use', 'default');
 		$this->addOption('--pretend', null, InputOption::VALUE_NONE, 'Dump the SQL queries that would be run');
