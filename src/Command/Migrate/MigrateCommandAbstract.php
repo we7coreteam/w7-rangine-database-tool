@@ -1,22 +1,34 @@
 <?php
 
 /**
- * This file is part of Rangine
+ * Rangine database Tool
  *
- * (c) We7Team 2019 <https://www.rangine.com/>
+ * (c) We7Team 2019 <https://www.rangine.com>
  *
  * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
  *
- * visited https://www.rangine.com/ for more details
+ * visited https://www.rangine.com for more details
  */
 
 namespace W7\DatabaseTool\Command\Migrate;
 
+use Illuminate\Filesystem\Filesystem;
+use W7\Command\Support\Composer;
 use W7\Console\Command\CommandAbstract;
 
 abstract class MigrateCommandAbstract extends CommandAbstract {
 	const MIGRATE_TABLE_NAME = 'migration';
 	protected $migrator;
+
+	/**
+	 * @var Composer
+	 */
+	protected $composer;
+
+	public function __construct(string $name = null) {
+		parent::__construct($name);
+		$this->composer = new Composer(new Filesystem(), BASE_PATH);
+	}
 
 	/**
 	 * Get all of the migration paths.

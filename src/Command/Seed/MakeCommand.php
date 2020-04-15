@@ -23,7 +23,7 @@ class MakeCommand extends GeneratorCommandAbstract {
 	protected $description = 'create a new seeder class';
 
 	protected function after() {
-		exec('composer dump-autoload');
+		$this->composer->dumpAutoloads();
 	}
 
 	/**
