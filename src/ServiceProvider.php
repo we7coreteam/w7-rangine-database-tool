@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Rangine DatabaseTool
+ * Rangine database Tool
  *
  * (c) We7Team 2019 <https://www.rangine.com>
  *
@@ -21,6 +21,7 @@ class ServiceProvider extends ProviderAbstract {
 	 * @return void
 	 */
 	public function register() {
+		$this->registerOpenBaseDir(BASE_PATH . '/database');
 		$this->registerCommand();
 	}
 
