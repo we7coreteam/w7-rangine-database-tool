@@ -136,9 +136,9 @@ class Migrator {
 	 */
 	protected function pendingMigrations($files, $ran) {
 		return Collection::make($files)
-				->reject(function ($file) use ($ran) {
-					return in_array($this->getMigrationName($file), $ran);
-				})->values()->all();
+			->reject(function ($file) use ($ran) {
+				return in_array($this->getMigrationName($file), $ran);
+			})->values()->all();
 	}
 
 	/**
@@ -388,10 +388,11 @@ class Migrator {
 			$migration->getConnection()
 		);
 
-		$callback = function () use ($migration, $method) {
+		$callback = function () use ($migration, $method, $connection) {
 			if (method_exists($migration, $method)) {
 				$this->fireMigrationEvent(new MigrationStarted($migration, $method));
 
+				$migration->setConnector($connection);
 				$migration->{$method}();
 
 				$this->fireMigrationEvent(new MigrationEnded($migration, $method));
@@ -399,9 +400,9 @@ class Migrator {
 		};
 
 		$this->getSchemaGrammar($connection)->supportsSchemaTransactions()
-			&& $migration->withinTransaction
-					? $connection->transaction($callback)
-					: $callback();
+		&& $migration->withinTransaction
+			? $connection->transaction($callback)
+			: $callback();
 	}
 
 	/**
@@ -433,9 +434,9 @@ class Migrator {
 		$db = $this->resolveConnection(
 			$migration->getConnection()
 		);
-
-		return $db->pretend(function () use ($migration, $method) {
+		return $db->pretend(function () use ($migration, $method, $db) {
 			if (method_exists($migration, $method)) {
+				$migration->setConnector($db);
 				$migration->{$method}();
 			}
 		});

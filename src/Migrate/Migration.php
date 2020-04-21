@@ -1,13 +1,13 @@
 <?php
 
 /**
- * This file is part of Rangine
+ * Rangine database Tool
  *
- * (c) We7Team 2019 <https://www.rangine.com/>
+ * (c) We7Team 2019 <https://www.rangine.com>
  *
  * document http://s.w7.cc/index.php?c=wiki&do=view&id=317&list=2284
  *
- * visited https://www.rangine.com/ for more details
+ * visited https://www.rangine.com for more details
  */
 
 namespace W7\DatabaseTool\Migrate;
@@ -22,12 +22,31 @@ abstract class Migration extends MigrationAbstract {
 	 * @var string|null
 	 */
 	protected $connection = '';
+
+	protected $connector;
 	/**
 	 * @var MySqlBuilder
 	 */
 	protected $schema;
 
+	public function setConnector($connector) {
+		$this->connector = $connector;
+		$this->initSchema();
+	}
+
+	public function getConnector() {
+		if (!$this->connector) {
+			$this->connector = idb()->connection($this->getConnection());
+		}
+
+		return $this->connector;
+	}
+
+	private function initSchema() {
+		$this->schema = $this->getConnector()->getSchemaBuilder();
+	}
+
 	public function __construct() {
-		$this->schema = idb()->connection($this->getConnection())->getSchemaBuilder();
+		$this->initSchema();
 	}
 }
