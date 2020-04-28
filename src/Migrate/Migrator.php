@@ -449,8 +449,11 @@ class Migrator {
 	 * @return object
 	 */
 	public function resolve($file) {
-		$timePrefix = implode('_', array_slice(explode('_', $file), 0, 4));
-		$class = Str::studly(implode('_', array_slice(explode('_', $file), 4))) . $timePrefix;
+		$class = Str::studly(implode('_', array_slice(explode('_', $file), 4)));
+		if (!class_exists($class)) {
+			$timePrefix = implode('_', array_slice(explode('_', $file), 0, 4));
+			$class .= $timePrefix;
+		}
 
 		return new $class;
 	}
