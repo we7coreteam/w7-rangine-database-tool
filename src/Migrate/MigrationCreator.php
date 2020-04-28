@@ -13,6 +13,7 @@
 namespace W7\DatabaseTool\Migrate;
 
 use Illuminate\Database\Migrations\MigrationCreator as MigrationCreatorAbstract;
+use Illuminate\Support\Str;
 
 class MigrationCreator extends MigrationCreatorAbstract {
 	/**
@@ -25,23 +26,12 @@ class MigrationCreator extends MigrationCreatorAbstract {
 	}
 
 	/**
-	 * Populate the place-holders in the migration stub.
+	 * Get the class name of a migration name.
 	 *
 	 * @param  string  $name
-	 * @param  string  $stub
-	 * @param  string|null  $table
 	 * @return string
 	 */
-	protected function populateStub($name, $stub, $table) {
-		$stub = str_replace('DummyClass', $this->getClassName($name) . $this->getDatePrefix(), $stub);
-
-		// Here we will replace the table place-holders with the table specified by
-		// the developer, which is useful for quickly creating a tables creation
-		// or update migration from the console instead of typing it manually.
-		if (! is_null($table)) {
-			$stub = str_replace('DummyTable', $table, $stub);
-		}
-
-		return $stub;
+	protected function getClassName($name) {
+		return Str::studly($name) . $this->getDatePrefix();
 	}
 }
