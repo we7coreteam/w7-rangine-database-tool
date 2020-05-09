@@ -22,6 +22,6 @@ class DummyClass extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		 $this->schema->dropIfExists('DummyTable');
+		$this->schema->dropIfExists('DummyTable');
 	}
 }
