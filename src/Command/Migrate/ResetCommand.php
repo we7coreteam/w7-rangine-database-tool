@@ -17,8 +17,8 @@ use Illuminate\Database\Migrations\DatabaseMigrationRepository;
 use Symfony\Component\Console\Input\InputOption;
 use W7\Console\Command\ConfirmTrait;
 use W7\Core\Facades\DB;
+use W7\Core\Facades\Event;
 use W7\DatabaseTool\Migrate\Migrator;
-use W7\Core\Dispatcher\EventDispatcher;
 
 class ResetCommand extends MigrateCommandAbstract {
 	use ConfirmTrait;
@@ -49,7 +49,7 @@ class ResetCommand extends MigrateCommandAbstract {
 		}
 
 		DB::setDefaultConnection($options['database']);
-		$this->migrator = new Migrator(new DatabaseMigrationRepository(DB::getFacadeRoot(), 'migration'), DB::getFacadeRoot(), new Filesystem(), iloader()->get(EventDispatcher::class));
+		$this->migrator = new Migrator(new DatabaseMigrationRepository(DB::getFacadeRoot(), 'migration'), DB::getFacadeRoot(), new Filesystem(), Event::getFacadeRoot());
 		$this->migrator->setConnection($this->option('database'));
 
 		// First, we'll make sure that the migration table actually exists before we
