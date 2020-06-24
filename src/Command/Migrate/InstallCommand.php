@@ -14,6 +14,7 @@ namespace W7\DatabaseTool\Command\Migrate;
 
 use Illuminate\Database\Migrations\DatabaseMigrationRepository;
 use Symfony\Component\Console\Input\InputOption;
+use W7\Core\Facades\DB;
 
 class InstallCommand extends MigrateCommandAbstract {
 	/**
@@ -33,8 +34,8 @@ class InstallCommand extends MigrateCommandAbstract {
 	 * @return void
 	 */
 	protected function handle($options) {
-		idb()->setDefaultConnection($options['database']);
-		$repository = new DatabaseMigrationRepository(idb(), MigrateCommandAbstract::MIGRATE_TABLE_NAME);
+		DB::setDefaultConnection($options['database']);
+		$repository = new DatabaseMigrationRepository(DB::getFacadeRoot(), MigrateCommandAbstract::MIGRATE_TABLE_NAME);
 		$repository->setSource($this->input->getOption('database'));
 
 		$repository->createRepository();
