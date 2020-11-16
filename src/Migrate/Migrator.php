@@ -22,8 +22,8 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use W7\Console\Io\Output;
-use W7\Contract\Event\EventDispatcherInterface;
 
 /**
  * 该类不直接继承illuminate下的Migrator是因为output不兼容问题
