@@ -12,7 +12,7 @@
 		"doctrine/dbal": "*"
 	},
 	"require-dev": {
-		"w7/php-cs-fixer": "^1.0"
+		"w7/php-cs-fixer": "*"
 	},
 	"autoload": {
 		"psr-4": {

@@ -15,6 +15,7 @@ namespace W7\DatabaseTool\Command\Migrate;
 use Illuminate\Filesystem\Filesystem;
 use W7\Command\Support\Composer;
 use W7\Console\Command\CommandAbstract;
+use W7\Core\Database\ConnectionResolver;
 use W7\DatabaseTool\Migrate\Migrator;
 
 abstract class MigrateCommandAbstract extends CommandAbstract {
@@ -74,5 +75,12 @@ abstract class MigrateCommandAbstract extends CommandAbstract {
 	 */
 	protected function getMigrationPath() {
 		return BASE_PATH.DIRECTORY_SEPARATOR.'database/migrations';
+	}
+
+	/**
+	 * @return ConnectionResolver
+	 */
+	protected function getDatabaseConnectionResolver() {
+		return $this->getContainer()->singleton('db-factory');
 	}
 }

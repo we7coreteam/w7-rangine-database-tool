@@ -16,8 +16,6 @@ use Illuminate\Database\Migrations\DatabaseMigrationRepository;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputOption;
 use W7\Console\Command\ConfirmTrait;
-use W7\Core\Facades\DB;
-use W7\Core\Facades\Event;
 use W7\DatabaseTool\Migrate\Migrator;
 
 class MigrateCommand extends MigrateCommandAbstract {
@@ -38,18 +36,13 @@ class MigrateCommand extends MigrateCommandAbstract {
 		$this->addOption('--force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production');
 	}
 
-	/**
-	 * Execute the console command.
-	 *
-	 * @return void
-	 */
 	protected function handle($options) {
 		if (! $this->confirmToProceed()) {
 			return;
 		}
 
-		DB::setDefaultConnection($options['database']);
-		$this->migrator = new Migrator(new DatabaseMigrationRepository(DB::getFacadeRoot(), MigrateCommandAbstract::MIGRATE_TABLE_NAME), DB::getFacadeRoot(), new Filesystem(), Event::getFacadeRoot());
+		$this->getDatabaseConnectionResolver()->setDefaultConnection($options['database']);
+		$this->migrator = new Migrator(new DatabaseMigrationRepository($this->getDatabaseConnectionResolver(), MigrateCommandAbstract::MIGRATE_TABLE_NAME), $this->getDatabaseConnectionResolver(), new Filesystem(), $this->getEventDispatcher());
 
 		$this->prepareDatabase();
 

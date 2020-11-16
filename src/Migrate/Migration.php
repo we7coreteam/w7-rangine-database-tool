@@ -12,9 +12,9 @@
 
 namespace W7\DatabaseTool\Migrate;
 
+use Illuminate\Database\Connection;
 use Illuminate\Database\Migrations\Migration as MigrationAbstract;
 use Illuminate\Database\Schema\MySqlBuilder;
-use W7\Core\Facades\DB;
 
 abstract class Migration extends MigrationAbstract {
 	/**
@@ -23,7 +23,9 @@ abstract class Migration extends MigrationAbstract {
 	 * @var string|null
 	 */
 	protected $connection = '';
-
+	/**
+	 * @var Connection
+	 */
 	protected $connector;
 	/**
 	 * @var MySqlBuilder
@@ -35,16 +37,8 @@ abstract class Migration extends MigrationAbstract {
 		$this->initSchema();
 	}
 
-	public function getConnector() {
-		if (!$this->connector) {
-			$this->connector = DB::connection($this->getConnection());
-		}
-
-		return $this->connector;
-	}
-
 	private function initSchema() {
-		$this->schema = $this->getConnector()->getSchemaBuilder();
+		$this->schema = $this->connector->getSchemaBuilder();
 	}
 
 	public function __construct() {

@@ -17,7 +17,6 @@ use Symfony\Component\Console\Input\InputOption;
 use W7\Console\Command\CommandAbstract;
 use W7\Console\Command\ConfirmTrait;
 use W7\Core\Exception\CommandException;
-use W7\Core\Facades\DB;
 
 class SeedCommand extends CommandAbstract {
 	use ConfirmTrait;
@@ -52,7 +51,7 @@ class SeedCommand extends CommandAbstract {
 			return;
 		}
 
-		DB::setDefaultConnection($this->option('database'));
+		$this->getContainer()->singleton('db-factory')->setDefaultConnection($this->option('database'));
 
 		Model::unguarded(function () use ($class) {
 			(new $class)->run();

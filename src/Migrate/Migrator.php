@@ -23,7 +23,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use W7\Console\Io\Output;
-use W7\Core\Events\Dispatcher;
+use W7\Contract\Event\EventDispatcherInterface;
 
 /**
  * 该类不直接继承illuminate下的Migrator是因为output不兼容问题
@@ -34,7 +34,7 @@ class Migrator {
 	/**
 	 * The event dispatcher instance.
 	 *
-	 * @var Dispatcher
+	 * @var EventDispatcherInterface
 	 */
 	protected $events;
 
@@ -80,20 +80,11 @@ class Migrator {
 	 */
 	protected $output;
 
-	/**
-	 * Create a new migrator instance.
-	 *
-	 * @param  MigrationRepositoryInterface  $repository
-	 * @param  \Illuminate\Database\ConnectionResolverInterface  $resolver
-	 * @param  \Illuminate\Filesystem\Filesystem  $files
-	 * @param  Dispatcher|null  $dispatcher
-	 * @return void
-	 */
 	public function __construct(
 		MigrationRepositoryInterface $repository,
 		Resolver $resolver,
 		Filesystem $files,
-		Dispatcher $dispatcher = null
+		EventDispatcherInterface $dispatcher = null
 	) {
 		$this->files = $files;
 		$this->events = $dispatcher;

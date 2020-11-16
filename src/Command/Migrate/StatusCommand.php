@@ -16,8 +16,6 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Database\Migrations\DatabaseMigrationRepository;
 use Illuminate\Support\Collection;
 use Symfony\Component\Console\Input\InputOption;
-use W7\Core\Facades\DB;
-use W7\Core\Facades\Event;
 use W7\DatabaseTool\Migrate\Migrator;
 
 class StatusCommand extends MigrateCommandAbstract {
@@ -41,14 +39,9 @@ class StatusCommand extends MigrateCommandAbstract {
 		$this->addOption('--realpath', null, InputOption::VALUE_NONE, 'Indicate any provided migration file paths are pre-resolved absolute paths');
 	}
 
-	/**
-	 * Execute the console command.
-	 *
-	 * @return void
-	 */
 	protected function handle($options) {
-		DB::setDefaultConnection($options['database']);
-		$this->migrator = new Migrator(new DatabaseMigrationRepository(DB::getFacadeRoot(), MigrateCommandAbstract::MIGRATE_TABLE_NAME), DB::getFacadeRoot(), new Filesystem(), Event::getFacadeRoot());
+		$this->getDatabaseConnectionResolver()->setDefaultConnection($options['database']);
+		$this->migrator = new Migrator(new DatabaseMigrationRepository($this->getDatabaseConnectionResolver(), MigrateCommandAbstract::MIGRATE_TABLE_NAME), $this->getDatabaseConnectionResolver(), new Filesystem(), $this->getEventDispatcher());
 		$this->migrator->setConnection($this->option('database'));
 
 		if (! $this->migrator->repositoryExists()) {
