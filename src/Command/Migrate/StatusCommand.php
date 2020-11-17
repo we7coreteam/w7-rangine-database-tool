@@ -45,7 +45,8 @@ class StatusCommand extends MigrateCommandAbstract {
 		$this->migrator->setConnection($this->option('database'));
 
 		if (! $this->migrator->repositoryExists()) {
-			return $this->output->error('Migration table not found.');
+			$this->output->error('Migration table not found.');
+			return false;
 		}
 
 		$ran = $this->migrator->getRepository()->getRan();
