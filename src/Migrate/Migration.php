@@ -40,8 +40,4 @@ abstract class Migration extends MigrationAbstract {
 	private function initSchema() {
 		$this->schema = $this->connector->getSchemaBuilder();
 	}
-
-	public function __construct() {
-		$this->initSchema();
-	}
 }
