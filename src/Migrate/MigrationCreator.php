@@ -20,7 +20,7 @@ class MigrationCreator extends MigrationCreatorAbstract {
 	protected $customStubPath = '';
 
 	public function __construct(Filesystem $files) {
-		parent::__construct($files, '');
+		parent::__construct($files, $this->stubPath());
 	}
 
 	protected function getStub($table, $create) {
