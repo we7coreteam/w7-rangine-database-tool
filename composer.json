@@ -9,7 +9,7 @@
 	"require": {
 		"php": ">=7.1.0",
 		"w7/rangine": "*",
-		"doctrine/dbal": "*"
+		"doctrine/dbal": "~2.0"
 	},
 	"require-dev": {
 		"w7/php-cs-fixer": "*"
