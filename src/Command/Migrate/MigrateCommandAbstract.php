@@ -48,7 +48,7 @@ abstract class MigrateCommandAbstract extends CommandAbstract {
 		if ($this->input->hasOption('path') && $this->input->getOption('path')) {
 			return collect($this->input->getOption('path'))->map(function ($path) {
 				return ! $this->usingRealPath()
-								? BASE_PATH.DIRECTORY_SEPARATOR.$path
+								? BASE_PATH. '/' .$path
 								: $path;
 			})->all();
 		}
@@ -74,7 +74,7 @@ abstract class MigrateCommandAbstract extends CommandAbstract {
 	 * @return string
 	 */
 	protected function getMigrationPath() {
-		return BASE_PATH.DIRECTORY_SEPARATOR.'database/migrations';
+		return BASE_PATH . '/database/migrations';
 	}
 
 	/**
