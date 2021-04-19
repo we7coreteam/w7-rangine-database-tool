@@ -13,6 +13,7 @@
 namespace W7\DatabaseTool\Command\Migrate;
 
 use Illuminate\Filesystem\Filesystem;
+use W7\App;
 use W7\Command\Support\Composer;
 use W7\Console\Command\CommandAbstract;
 use W7\Core\Database\ConnectionResolver;
@@ -33,7 +34,7 @@ abstract class MigrateCommandAbstract extends CommandAbstract {
 
 	public function __construct(string $name = null) {
 		parent::__construct($name);
-		$this->composer = new Composer(new Filesystem(), BASE_PATH);
+		$this->composer = new Composer(new Filesystem(), App::getApp()->getBasePath());
 	}
 
 	/**
@@ -48,7 +49,7 @@ abstract class MigrateCommandAbstract extends CommandAbstract {
 		if ($this->input->hasOption('path') && $this->input->getOption('path')) {
 			return collect($this->input->getOption('path'))->map(function ($path) {
 				return ! $this->usingRealPath()
-								? BASE_PATH. '/' .$path
+								? App::getApp()->getBasePath(). '/' .$path
 								: $path;
 			})->all();
 		}
@@ -74,7 +75,7 @@ abstract class MigrateCommandAbstract extends CommandAbstract {
 	 * @return string
 	 */
 	protected function getMigrationPath() {
-		return BASE_PATH . '/database/migrations';
+		return App::getApp()->getBasePath() . '/database/migrations';
 	}
 
 	/**

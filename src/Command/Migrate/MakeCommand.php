@@ -14,6 +14,7 @@ namespace W7\DatabaseTool\Command\Migrate;
 
 use Illuminate\Database\Console\Migrations\TableGuesser;
 use Symfony\Component\Console\Input\InputOption;
+use W7\App;
 use W7\DatabaseTool\Migrate\MigrationCreator;
 use Illuminate\Filesystem\Filesystem;
 use W7\Core\Exception\CommandException;
@@ -116,7 +117,7 @@ class MakeCommand extends MigrateCommandAbstract {
 	protected function getMigrationPath() {
 		if (! is_null($targetPath = $this->input->getOption('path'))) {
 			return ! $this->usingRealPath()
-							? BASE_PATH.'/'.$targetPath
+							? App::getApp()->getBasePath().'/'.$targetPath
 							: $targetPath;
 		}
 
