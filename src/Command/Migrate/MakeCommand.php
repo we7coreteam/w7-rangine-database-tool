@@ -13,12 +13,12 @@
 namespace W7\DatabaseTool\Command\Migrate;
 
 use Illuminate\Database\Console\Migrations\TableGuesser;
+use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
 use W7\App;
 use W7\DatabaseTool\Migrate\MigrationCreator;
 use Illuminate\Filesystem\Filesystem;
 use W7\Core\Exception\CommandException;
-use W7\Core\Helper\StringHelper;
 
 class MakeCommand extends MigrateCommandAbstract {
 	/**
@@ -55,7 +55,7 @@ class MakeCommand extends MigrateCommandAbstract {
 		// It's possible for the developer to specify the tables to modify in this
 		// schema operation. The developer may also specify if this table needs
 		// to be freshly created so we can create the appropriate migrations.
-		$name = StringHelper::snake(trim($this->input->getArgument('name')));
+		$name = Str::snake(trim($this->input->getArgument('name')));
 
 		$table = $this->input->getOption('table');
 
