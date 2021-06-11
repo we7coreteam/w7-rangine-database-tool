@@ -51,7 +51,7 @@ class SeedCommand extends CommandAbstract {
 			return;
 		}
 
-		$this->getContainer()->singleton('db-factory')->setDefaultConnection($this->option('database'));
+		$this->getContainer()->get('db-factory')->setDefaultConnection($this->option('database'));
 
 		Model::unguarded(function () use ($class) {
 			(new $class)->run();

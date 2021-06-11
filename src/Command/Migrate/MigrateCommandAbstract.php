@@ -82,6 +82,6 @@ abstract class MigrateCommandAbstract extends CommandAbstract {
 	 * @return ConnectionResolver
 	 */
 	protected function getDatabaseConnectionResolver() {
-		return $this->getContainer()->singleton('db-factory');
+		return $this->getContainer()->get('db-factory');
 	}
 }
