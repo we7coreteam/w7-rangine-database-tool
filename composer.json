@@ -8,7 +8,7 @@
 	"license": "Apache-2.0",
 	"require": {
 		"php": ">=7.1.0",
-		"w7/rangine": "*",
+		"w7/rangine": "~3.0.0",
 		"doctrine/dbal": "~2.0"
 	},
 	"require-dev": {
@@ -24,6 +24,13 @@
 			"providers": [
 				"W7\\DatabaseTool\\ServiceProvider"
 			]
+		}
+	},
+	"config": {
+		"allow-plugins": {
+			"w7/php-cs-fixer": true,
+			"funkjedi/composer-include-files": true,
+			"w7/rangine-package-plugin": true
 		}
 	}
 }
