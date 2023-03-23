@@ -2,7 +2,7 @@
 
 use W7\DatabaseTool\Migrate\Migration;
 
-class DummyClass extends Migration {
+return new class extends Migration {
 	/**
 	 * Run the migrations.
 	 *
@@ -20,4 +20,4 @@ class DummyClass extends Migration {
 	public function down() {
 		//
 	}
-}
+};

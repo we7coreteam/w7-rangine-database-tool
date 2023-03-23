@@ -79,6 +79,7 @@ class Migrator {
 	 * @var \Illuminate\Console\OutputStyle
 	 */
 	protected $output;
+	protected static $requiredPathCache = [];
 
 	public function __construct(
 		MigrationRepositoryInterface $repository,
@@ -158,7 +159,7 @@ class Migrator {
 
 		$step = $options['step'] ?? false;
 
-		$this->fireMigrationEvent(new MigrationsStarted);
+		$this->fireMigrationEvent(new MigrationsStarted('up'));
 
 		// Once we have the array of migrations, we will spin through them and run the
 		// migrations "up" so the changes are made to the databases. We'll then log
@@ -171,7 +172,7 @@ class Migrator {
 			}
 		}
 
-		$this->fireMigrationEvent(new MigrationsEnded);
+		$this->fireMigrationEvent(new MigrationsEnded('up'));
 	}
 
 	/**
@@ -186,9 +187,9 @@ class Migrator {
 		// First we will resolve a "real" instance of the migration class from this
 		// migration file name. Once we have the instances we can run the actual
 		// command such as "up" or "down", or we can just simulate the action.
-		$migration = $this->resolve(
-			$name = $this->getMigrationName($file)
-		);
+		$migration = $this->resolvePath($file);
+
+		$name = $this->getMigrationName($file);
 
 		if ($pretend) {
 			return $this->pretendToRun($migration, 'up');
@@ -243,6 +244,10 @@ class Migrator {
 			return $this->repository->getMigrations($steps);
 		}
 
+		if (($batch = $options['batch'] ?? 0) > 0) {
+			return $this->repository->getMigrationsByBatch($batch);
+		}
+
 		return $this->repository->getLast();
 	}
 
@@ -259,7 +264,7 @@ class Migrator {
 
 		$this->requireFiles($files = $this->getMigrationFiles($paths));
 
-		$this->fireMigrationEvent(new MigrationsStarted);
+		$this->fireMigrationEvent(new MigrationsStarted('down'));
 
 		// Next we will run through all of the migrations and call the "down" method
 		// which will reverse each migration in order. This getLast method on the
@@ -282,7 +287,7 @@ class Migrator {
 			);
 		}
 
-		$this->fireMigrationEvent(new MigrationsEnded);
+		$this->fireMigrationEvent(new MigrationsEnded('down'));
 
 		return $rolledBack;
 	}
@@ -344,11 +349,9 @@ class Migrator {
 		// First we will get the file name of the migration so we can resolve out an
 		// instance of the migration. Once we get an instance we can either run a
 		// pretend execution of the migration or we can run the real migration.
-		$instance = $this->resolve(
-			$name = $this->getMigrationName($file)
-		);
+		$instance = $this->resolvePath($file);
 
-		$this->note("<comment>Rolling back:</comment> {$name}");
+		$name = $this->getMigrationName($file);
 
 		if ($pretend) {
 			return $this->pretendToRun($instance, 'down');
@@ -440,14 +443,46 @@ class Migrator {
 	 * @return object
 	 */
 	public function resolve($file) {
-		$compateClass = Str::studly(implode('_', array_slice(explode('_', $file), 4)));
-		$timePrefix = implode('_', array_slice(explode('_', $file), 0, 4));
-		$class = $compateClass . $timePrefix;
-		if (!class_exists($class)) {
-			$class = $compateClass;
+		var_dump($file);
+		$class = $this->getMigrationClass($file);
+
+		return new $class;
+	}
+
+	/**
+	 * Resolve a migration instance from a migration path.
+	 *
+	 * @param  string  $path
+	 * @return object
+	 */
+	protected function resolvePath(string $path)
+	{
+		$class = $this->getMigrationClass($this->getMigrationName($path));
+
+		if (class_exists($class) && realpath($path) == (new \ReflectionClass($class))->getFileName()) {
+			return new $class;
+		}
+
+		$migration = static::$requiredPathCache[$path] ??= $this->files->getRequire($path);
+
+		if (is_object($migration)) {
+			return method_exists($migration, '__construct')
+				? $this->files->getRequire($path)
+				: clone $migration;
 		}
 
 		return new $class;
+	}
+
+	/**
+	 * Generate a migration class name based on the migration file name.
+	 *
+	 * @param  string  $migrationName
+	 * @return string
+	 */
+	protected function getMigrationClass(string $migrationName): string
+	{
+		return Str::studly(implode('_', array_slice(explode('_', $migrationName), 4)));
 	}
 
 	/**
